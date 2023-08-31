@@ -1,0 +1,89 @@
+This README file contains the instructions on how to use exa_client_deploy.py to build/configure/remove A3I client software packages on a DGX server.
+
+Prerequisites and Limitations:
+1) Only one instance of the script can be run at a time.
+2) The script needs python3 to run.
+3) The script needs to be run as root.
+4) The script and the source bundled in A3I client software package is tested with 4.15.0-x, 5.3.0-x & 5.4.0-x kernel versions. The script may or may not work for other kernel versions. Contact DDN support if you have a kernel different from those mentioned above.
+
+Here are some sample examples of the script run -
+
+1) Checking if A3I client software is installed or not -
+
+# ./exa_client_deploy.py
+
+DDN A3I client software installation tool: Version 6.0.0
+Select an option:
+
+1) Check if DDN A3I client software is installed
+2) Install DDN A3I client software
+3) Configure DDN A3I client software
+4) Remove DDN A3I client software
+5) Exit
+1
+
+A3I client software packages are not installed
+
+2) Installing A3I client software -
+
+# ./exa_client_deploy.py 
+
+DDN A3I client software installation tool: Version 6.0.0
+Select an option:
+
+1) Check if DDN A3I client software is installed
+2) Install DDN A3I client software
+3) Configure DDN A3I client software
+4) Remove DDN A3I client software
+5) Exit
+2
+Enter path to lustre source (leave empty to use default source):
+
+Building A3I client software. This may take a while...
+A3I client software packages are installed and placed in /opt/ddn/exascaler/rpms folder
+Use option 3 to configure A3I client software before loading lustre module
+
+3) Configuring A3I client software - 
+This step needs user to specify LNets (Semicolon separated) in following format -
+<LNet>(comma separated interface list);<Lnet>(comma separated interface list)
+e.g. o2ib0(ib0,ib1);o2ib1(ib2,ib3)
+
+# ./exa_client_deploy.py 
+
+DDN A3I client software installation tool: Version 6.0.0
+Select an option:
+
+1) Check if DDN A3I client software is installed
+2) Install DDN A3I client software
+3) Configure DDN A3I client software
+4) Remove DDN A3I client software
+5) Exit
+3
+Specify LNets (semicolon separated) - default [o2ib(ib0,ib1)]:
+Specify cpu_npartitions - default [20]:
+
+A3I client software is configured
+
+Load the lustre module once configuration is done.
+
+# modprobe lustre
+
+Mount the lustre filesystem on the client.
+
+E.g. -
+# mount -t lustre 172.60.0.16@o2ib:/fs0a9c /mnt/ai400x/
+
+
+After the filesystem is mounted, the tune_lustre.sh script bundled in the client package can be used to boost performance.
+
+# ./tune_lustre.sh
+
+
+The exa_client_deploy.py script can also be used to deploy/configure A3I client software in a single command -
+
+# ./exa_client_deploy.py --install --lnets "o2ib0(ib0,ib1,ib2,ib3)" --npartitions 20
+
+Building A3I client software. This may take a while...
+A3I client software packages are installed and placed in /opt/ddn/exascaler/rpms folder
+
+A3I client software is configured
